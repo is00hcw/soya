@@ -1,0 +1,103 @@
+Index: custom-src/org/eclipse/papyrus/uml/diagram/sequence/edit/policies/MessageLabelEditPolicy.java
+===================================================================
+--- custom-src/org/eclipse/papyrus/uml/diagram/sequence/edit/policies/MessageLabelEditPolicy.java	(revision 9088)
++++ custom-src/org/eclipse/papyrus/uml/diagram/sequence/edit/policies/MessageLabelEditPolicy.java	(working copy)
+@@ -604,13 +604,13 @@
+ 			// name
+ 			if((style & ICustomAppearence.DISP_PARAMETER_NAME) != 0) {
+ 				buffer.append(" ");
+-				buffer.append(property.getName());
++				buffer.append(trimToEmpty(property.getName()));
+ 			}
+ 
+ 			if((style & ICustomAppearence.DISP_PARAMETER_TYPE) != 0) {
+ 				// type
+ 				if(property.getType() != null) {
+-					buffer.append(": " + property.getType().getName());
++					buffer.append(": " + trimToEmpty(property.getType().getName()));
+ 				} else {
+ 					buffer.append(": " + TypeUtil.UNDEFINED_TYPE_NAME);
+ 				}
+@@ -658,11 +658,14 @@
+ 		}
+ 
+ 		private static String getValue(Message e, Property property) {
+-			EList<ValueSpecification> arguments = e.getArguments();
+-			for(ValueSpecification v : arguments)
+-				if(v.getName().equals(property.getName())){
+-					return ValueSpecificationUtil.getSpecificationValue(v);
+-				}
++			try {
++				EList<ValueSpecification> arguments = e.getArguments();
++				for(ValueSpecification v : arguments)
++					if(v.getName() != null && property.getName() != null && v.getName().equals(property.getName())){
++						return ValueSpecificationUtil.getSpecificationValue(v);
++					}
++			} catch (Exception e1) {
++			}
+ 			return null;
+ 		}
+ 
+@@ -687,7 +690,7 @@
+ 			// name
+ 			if((style & ICustomAppearence.DISP_NAME) != 0) {
+ 				buffer.append(" ");
+-				buffer.append(signal.getName());
++				buffer.append(trimToEmpty(signal.getName()));
+ 			}
+ 
+ 			// 
+@@ -740,13 +743,13 @@
+ 			// name
+ 			if((style & ICustomAppearence.DISP_PARAMETER_NAME) != 0) {
+ 				buffer.append(" ");
+-				buffer.append(parameter.getName());
++				buffer.append(trimToEmpty(parameter.getName()));
+ 			}
+ 
+ 			if((style & ICustomAppearence.DISP_PARAMETER_TYPE) != 0) {
+ 				// type
+ 				if(parameter.getType() != null) {
+-					buffer.append(": " + parameter.getType().getName());
++					buffer.append(": " + trimToEmpty(parameter.getType().getName()));
+ 				} else {
+ 					buffer.append(": " + TypeUtil.UNDEFINED_TYPE_NAME);
+ 				}
+@@ -789,11 +792,14 @@
+ 		}
+ 		
+ 		private static String getValue(Message e, Parameter parameter) {
+-			EList<ValueSpecification> arguments = e.getArguments();
+-			for(ValueSpecification v : arguments)
+-				if(v.getName().equals(parameter.getName())){
+-					return ValueSpecificationUtil.getSpecificationValue(v);
+-				}
++			try {
++				EList<ValueSpecification> arguments = e.getArguments();
++				for(ValueSpecification v : arguments)
++					if(v.getName() != null && parameter.getName() != null && v.getName().equals(parameter.getName())){
++						return ValueSpecificationUtil.getSpecificationValue(v);
++					}
++			} catch (Exception e1) {
++			}
+ 			return null;
+ 		}
+ 
+@@ -809,7 +815,7 @@
+ 			// name
+ 			if((style & ICustomAppearence.DISP_NAME) != 0) {
+ 				buffer.append(" ");
+-				buffer.append(operation.getName());
++				buffer.append(trimToEmpty(operation.getName()));
+ 			}
+ 
+ 			// 
+@@ -981,4 +987,8 @@
+ 			return paramString.toString();
+ 		}
+ 	}
++	
++	static String trimToEmpty(String str){
++		return str == null? "" : str;
++	}
+ }
